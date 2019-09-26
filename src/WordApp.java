@@ -26,6 +26,7 @@ public class WordApp {
 	static volatile boolean paused;
 	static volatile boolean quit;
 	static final int DIFFICULTY = 10;
+	static volatile AtomicBoolean updatePending;
 	static 	Score score = new Score();
 
 	static WordPanel w;

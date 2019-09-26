@@ -18,9 +18,10 @@ public class Mover implements Runnable{
     while(!WordApp.paused)
     {
       word.drop(1);
+      WordApp.updatePending = true;
       System.out.println("lowering?");
       try{
-        Thread.sleep(word.getSpeed()/(1/WordApp.DIFFICULTY))
+        Thread.sleep(word.getSpeed()/(1/WordApp.DIFFICULTY));
       }
       catch(InterruptedException e)
       {

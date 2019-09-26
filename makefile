@@ -12,7 +12,7 @@ BINDIR=bin
 $(BINDIR)/%.class:$(SRCDIR)/%.java
 	$(JAVAC) -d $(BINDIR)/ -cp $(BINDIR) $<
 
-CLASSES= Score.class WordDictionary.class WordRecord.class WordPanel.class WordApp.class
+CLASSES= Score.class WordDictionary.class WordRecord.class WordApp.class Mover.class WordPanel.class
 
 CLASS_FILES=$(CLASSES:%.class=$(BINDIR)/%.class)
 

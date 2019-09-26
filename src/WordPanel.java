@@ -51,6 +51,14 @@ public class WordPanel extends JPanel implements Runnable {
 				t.start();
 			}
 
+			while(true)
+			{
+				if(Wordapp.updatePending)
+				{
+					repaint();
+					WordApp.updatePending = false;
+				}
+			}
 
 		}
 
