@@ -18,15 +18,15 @@ public class WordApp {
    	static int frameX=1000;
 	static int frameY=600;
 	static int yLimit=480;
+	static JLabel caught;
+	static JLabel missed;
+	static JLabel scr;
 
 	static WordDictionary dict = new WordDictionary(); //use default dictionary, to read from file eventually
 
 	static WordRecord[] words;
 	static volatile boolean done;  //must be volatile
-	static volatile boolean paused;
-	static volatile boolean quit;
-	static final int DIFFICULTY = 10;
-	static volatile AtomicBoolean updatePending;
+
 	static 	Score score = new Score();
 
 	static WordPanel w;
@@ -51,9 +51,9 @@ public class WordApp {
 
 	    JPanel txt = new JPanel();
 	    txt.setLayout(new BoxLayout(txt, BoxLayout.LINE_AXIS));
-	    JLabel caught =new JLabel("Caught: " + score.getCaught() + "    ");
-	    JLabel missed =new JLabel("Missed:" + score.getMissed()+ "    ");
-	    JLabel scr =new JLabel("Score:" + score.getScore()+ "    ");
+	    caught =new JLabel("Caught: " + score.getCaught() + "    ");
+	    missed =new JLabel("Missed:" + score.getMissed()+ "    ");
+	    scr =new JLabel("Score:" + score.getScore()+ "    ");
 	    txt.add(caught);
 	    txt.add(missed);
 	    txt.add(scr);
@@ -65,7 +65,19 @@ public class WordApp {
 	    {
 	      public void actionPerformed(ActionEvent evt) {
 	          String text = textEntry.getText();
-	          //[snip]
+						for (int i = 0; i< noWords; i++)
+						{
+							if(words[i].matchWord(text))
+							{
+								synchronized (score)
+								{
+									score.caughtWord(text.length());
+									Governor.scoreUpdatePending.set(true);
+								}
+								break;
+							}
+						}
+
 	          textEntry.setText("");
 	          textEntry.requestFocus();
 	      }
@@ -92,7 +104,7 @@ public class WordApp {
 		JButton endB = new JButton("End");;
 
 				// add the listener to the jbutton to handle the "pressed" event
-				endB.addActionListener(new ActionListener()
+				pauseB.addActionListener(new ActionListener()
 			    {
 			      public void actionPerformed(ActionEvent e)
 			      {

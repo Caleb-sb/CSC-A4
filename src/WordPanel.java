@@ -3,6 +3,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.CountDownLatch;
@@ -53,10 +54,22 @@ public class WordPanel extends JPanel implements Runnable {
 
 			while(true)
 			{
-				if(Wordapp.updatePending)
+				if(Governor.updatePending.get())
 				{
+					if(Governor.scoreUpdatePending.get())
+					{
+						synchronized (WordApp.score)
+						{
+							WordApp.missed.setText("Missed: " + WordApp.score.getMissed() + "    ");
+							WordApp.caught.setText("Caught: " + WordApp.score.getCaught()+ "    ");
+							WordApp.scr.setText("Score: "+ WordApp.score.getScore()+ "    ");
+							Governor.scoreUpdatePending.set(false);
+						}
+					}
 					repaint();
-					WordApp.updatePending = false;
+					Toolkit.getDefaultToolkit().sync();
+					Governor.updatePending.set(false);
+
 				}
 			}
 

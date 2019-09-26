@@ -6,6 +6,7 @@
 public class Mover implements Runnable{
 
   private WordRecord word;
+  private Score score;
 
   Mover(WordRecord word)
   {
@@ -15,13 +16,23 @@ public class Mover implements Runnable{
   @Override
   public void run()
   {
-    while(!WordApp.paused)
+    while(!Governor.paused)
     {
       word.drop(1);
-      WordApp.updatePending = true;
-      System.out.println("lowering?");
+      if (word.dropped())
+      {
+        synchronized (WordApp.score)
+        {
+          WordApp.score.missedWord();
+        }
+        Governor.scoreUpdatePending.set(true);
+        word.resetWord();
+      }
+      Governor.updatePending.set(true);
+
+      //System.out.println("lowering?");
       try{
-        Thread.sleep(word.getSpeed()/(1/WordApp.DIFFICULTY));
+        Thread.sleep(word.getSpeed()/Governor.DIFFICULTY);
       }
       catch(InterruptedException e)
       {
