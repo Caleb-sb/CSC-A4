@@ -1,18 +1,18 @@
-package skeletonCodeAssgnmt2;
+
 
 public class Score {
 	private int missedWords;
 	private int caughtWords;
 	private int gameScore;
-	
+
 	Score() {
 		missedWords=0;
 		caughtWords=0;
 		gameScore=0;
 	}
-		
+
 	// all getters and setters must be synchronized
-	
+
 	public int getMissed() {
 		return missedWords;
 	}
@@ -20,7 +20,7 @@ public class Score {
 	public int getCaught() {
 		return caughtWords;
 	}
-	
+
 	public int getTotal() {
 		return (missedWords+caughtWords);
 	}
@@ -28,7 +28,7 @@ public class Score {
 	public int getScore() {
 		return gameScore;
 	}
-	
+
 	public void missedWord() {
 		missedWords++;
 	}

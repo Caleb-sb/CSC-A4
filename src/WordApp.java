@@ -1,7 +1,4 @@
-package skeletonCodeAssgnmt2;
-
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,36 +26,36 @@ public class WordApp {
 	static 	Score score = new Score();
 
 	static WordPanel w;
-	
-	
-	
+
+
+
 	public static void setupGUI(int frameX,int frameY,int yLimit) {
 		// Frame init and dimensions
-    	JFrame frame = new JFrame("WordGame"); 
+    	JFrame frame = new JFrame("WordGame");
     	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	frame.setSize(frameX, frameY);
-    	
+
       	JPanel g = new JPanel();
-        g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS)); 
+        g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS));
       	g.setSize(frameX,frameY);
- 
-    	
+
+
 		w = new WordPanel(words,yLimit);
 		w.setSize(frameX,yLimit+100);
 	    g.add(w);
-	    
-	    
+
+
 	    JPanel txt = new JPanel();
-	    txt.setLayout(new BoxLayout(txt, BoxLayout.LINE_AXIS)); 
+	    txt.setLayout(new BoxLayout(txt, BoxLayout.LINE_AXIS));
 	    JLabel caught =new JLabel("Caught: " + score.getCaught() + "    ");
 	    JLabel missed =new JLabel("Missed:" + score.getMissed()+ "    ");
-	    JLabel scr =new JLabel("Score:" + score.getScore()+ "    ");    
+	    JLabel scr =new JLabel("Score:" + score.getScore()+ "    ");
 	    txt.add(caught);
 	    txt.add(missed);
 	    txt.add(scr);
-    
+
 	    //[snip]
-  
+
 	    final JTextField textEntry = new JTextField("",20);
 	   textEntry.addActionListener(new ActionListener()
 	    {
@@ -69,15 +66,15 @@ public class WordApp {
 	          textEntry.requestFocus();
 	      }
 	    });
-	   
+
 	   txt.add(textEntry);
 	   txt.setMaximumSize( txt.getPreferredSize() );
 	   g.add(txt);
-	    
+
 	    JPanel b = new JPanel();
-        b.setLayout(new BoxLayout(b, BoxLayout.LINE_AXIS)); 
+        b.setLayout(new BoxLayout(b, BoxLayout.LINE_AXIS));
 	   	JButton startB = new JButton("Start");;
-		
+
 			// add the listener to the jbutton to handle the "pressed" event
 			startB.addActionListener(new ActionListener()
 		    {
@@ -88,7 +85,7 @@ public class WordApp {
 		      }
 		    });
 		JButton endB = new JButton("End");;
-			
+
 				// add the listener to the jbutton to handle the "pressed" event
 				endB.addActionListener(new ActionListener()
 			    {
@@ -97,22 +94,22 @@ public class WordApp {
 			    	  //[snip]
 			      }
 			    });
-		
+
 		b.add(startB);
 		b.add(endB);
-		
+
 		g.add(b);
-    	
+
       	frame.setLocationRelativeTo(null);  // Center window on screen.
       	frame.add(g); //add contents to window
-        frame.setContentPane(g);     
+        frame.setContentPane(g);
        	//frame.pack();  // don't do this - packs it into small space
         frame.setVisible(true);
 
-		
+
 	}
 
-	
+
 public static String[] getDictFromFile(String filename) {
 		String [] dictStr = null;
 		try {
@@ -134,7 +131,7 @@ public static String[] getDictFromFile(String filename) {
 	}
 
 	public static void main(String[] args) {
-    	
+
 		//deal with command line arguments
 		totalWords=Integer.parseInt(args[0]);  //total words to fall
 		noWords=Integer.parseInt(args[1]); // total words falling at any point
@@ -142,14 +139,14 @@ public static String[] getDictFromFile(String filename) {
 		String[] tmpDict=getDictFromFile(args[2]); //file of words
 		if (tmpDict!=null)
 			dict= new WordDictionary(tmpDict);
-		
+
 		WordRecord.dict=dict; //set the class dictionary for the words.
-		
+
 		words = new WordRecord[noWords];  //shared array of current words
-		
+
 		//[snip]
-		
-		setupGUI(frameX, frameY, yLimit);  
+
+		setupGUI(frameX, frameY, yLimit);
     	//Start WordPanel thread - for redrawing animation
 
 		int x_inc=(int)frameX/noWords;
