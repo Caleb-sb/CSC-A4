@@ -22,4 +22,4 @@ clean:
 	rm bin/*.class
 
 run:
-	java -cp bin WordApp "10" "1" "example_dict.txt"
+	java -cp bin WordApp "10" "4" "example_dict.txt"

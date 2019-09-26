@@ -23,6 +23,9 @@ public class WordApp {
 
 	static WordRecord[] words;
 	static volatile boolean done;  //must be volatile
+	static volatile boolean paused;
+	static volatile boolean quit;
+	static final int DIFFICULTY = 10;
 	static 	Score score = new Score();
 
 	static WordPanel w;
@@ -80,7 +83,8 @@ public class WordApp {
 		    {
 		      public void actionPerformed(ActionEvent e)
 		      {
-		    	  //[snip]
+		    	  Thread t = new Thread(w);
+						t.start();
 		    	  textEntry.requestFocus();  //return focus to the text entry field
 		      }
 		    });

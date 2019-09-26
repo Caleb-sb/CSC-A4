@@ -100,6 +100,7 @@ public class WordRecord {
 
 	public synchronized  void drop(int inc) {
 		setY(y+inc);
+		System.out.println(this.text+ ":"+ this.y);
 	}
 
 	public synchronized  boolean dropped() {
