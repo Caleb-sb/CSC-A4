@@ -1,4 +1,9 @@
-
+/*
+* The View in MVC
+* Gets communication from the Controlling class to update
+*
+*
+*/
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -7,9 +12,9 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.CountDownLatch;
-
 import javax.swing.JButton;
 import javax.swing.JPanel;
+
 
 public class WordPanel extends JPanel implements Runnable {
 		public static volatile boolean done;
@@ -44,35 +49,59 @@ public class WordPanel extends JPanel implements Runnable {
 		}
 
 		public void run() {
-			//add in code to animate this
+			//Creates Controller Threads
 			for(int i = 0; i < noWords; i++)
 			{
-				Mover m = new Mover(words[i]);
-				Thread t = new Thread(m);
+				Controller c = new Controller(words[i]);
+				Thread t = new Thread(c);
 				t.start();
 			}
 
-			while(true)
+			//Takes in communication booleans to update View
+			while(!WordApp.reset.get())
 			{
-				if(Governor.updatePending.get())
+				if(WordApp.updatePending.get())
 				{
-					if(Governor.scoreUpdatePending.get())
+					if(WordApp.scoreUpdatePending.get())
 					{
 						synchronized (WordApp.score)
 						{
+							//Updates all the View's counters
 							WordApp.missed.setText("Missed: " + WordApp.score.getMissed() + "    ");
 							WordApp.caught.setText("Caught: " + WordApp.score.getCaught()+ "    ");
 							WordApp.scr.setText("Score: "+ WordApp.score.getScore()+ "    ");
-							Governor.scoreUpdatePending.set(false);
+							WordApp.scoreUpdatePending.set(false);
+
+							//Updates View to end game
+							if(WordApp.score.getTotal() >= WordApp.totalWords)
+							{
+								WordApp.reset.set(true);
+								WordApp.finishGame(true);
+							}
 						}
 					}
 					repaint();
 					Toolkit.getDefaultToolkit().sync();
-					Governor.updatePending.set(false);
+					WordApp.updatePending.set(false);
 
 				}
 			}
+			//Sets View scores to zero after reset occurs
+			synchronized (WordApp.score)
+			{
+				WordApp.score.resetScore();
+				WordApp.missed.setText("Missed: " + WordApp.score.getMissed() + "    ");
+				WordApp.caught.setText("Caught: " + WordApp.score.getCaught()+ "    ");
+				WordApp.scr.setText("Score: "+ WordApp.score.getScore()+ "    ");
+				WordApp.textEntry.setText("");
+			}
 
+			//Resets the words to zero position to mimic the skeleton pre-start screen
+			for(int i = 0; i < noWords; i++)
+			{
+				words[i].resetPos();
+			}
+			repaint();
 		}
 
 	}

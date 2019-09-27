@@ -1,14 +1,16 @@
 /*
 * Created in an effort to parallelise as much as possible
-* Each word gets their own mover thread to lower them at their indiv speed
+* Each word gets their own Controller thread to lower them at their indiv speed
+* The Controller in MVC. Alters Model and View.
+* Animates, adds and removes words, Updates Model counters
 * BRDCAL003
 */
-public class Mover implements Runnable{
+public class Controller implements Runnable{
 
   private WordRecord word;
   private Score score;
 
-  Mover(WordRecord word)
+  Controller(WordRecord word)
   {
     this.word = word;
   }
@@ -16,7 +18,7 @@ public class Mover implements Runnable{
   @Override
   public void run()
   {
-    while(!Governor.paused)
+    while(!WordApp.reset.get())
     {
       word.drop(1);
       if (word.dropped())
@@ -25,14 +27,14 @@ public class Mover implements Runnable{
         {
           WordApp.score.missedWord();
         }
-        Governor.scoreUpdatePending.set(true);
+        WordApp.scoreUpdatePending.set(true);
         word.resetWord();
       }
-      Governor.updatePending.set(true);
+      WordApp.updatePending.set(true);
 
       //System.out.println("lowering?");
       try{
-        Thread.sleep(word.getSpeed()/Governor.DIFFICULTY);
+        Thread.sleep(word.getSpeed()/WordApp.DIFFICULTY);
       }
       catch(InterruptedException e)
       {

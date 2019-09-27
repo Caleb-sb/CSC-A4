@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import java.util.Scanner;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 //model is separate from the view.
 
 public class WordApp {
@@ -22,20 +23,30 @@ public class WordApp {
 	static JLabel missed;
 	static JLabel scr;
 
+	//Communication booleans
+	static volatile AtomicBoolean reset = new AtomicBoolean(false);
+	static volatile boolean quit;
+	static final int DIFFICULTY = 20;
+	static volatile AtomicBoolean updatePending = new AtomicBoolean(false);
+	static volatile AtomicBoolean scoreUpdatePending = new AtomicBoolean(false);
+	static volatile AtomicBoolean checkWord = new AtomicBoolean(false);
+
 	static WordDictionary dict = new WordDictionary(); //use default dictionary, to read from file eventually
 
 	static WordRecord[] words;
-	static volatile boolean done;  //must be volatile
+	//static volatile boolean done;  //must be volatile
 
 	static 	Score score = new Score();
-
+	static JButton startB;
+	static JButton endB;
 	static WordPanel w;
-
+	static JFrame frame = new JFrame("WordGame");
+	final static JTextField textEntry = new JTextField("",20);
 
 
 	public static void setupGUI(int frameX,int frameY,int yLimit) {
 		// Frame init and dimensions
-    	JFrame frame = new JFrame("WordGame");
+    	//JFrame frame = new JFrame("WordGame");
     	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	frame.setSize(frameX, frameY);
 
@@ -60,7 +71,7 @@ public class WordApp {
 
 	    //[snip]
 
-	    final JTextField textEntry = new JTextField("",20);
+			textEntry.setEnabled(false);
 	   textEntry.addActionListener(new ActionListener()
 	    {
 	      public void actionPerformed(ActionEvent evt) {
@@ -72,7 +83,7 @@ public class WordApp {
 								synchronized (score)
 								{
 									score.caughtWord(text.length());
-									Governor.scoreUpdatePending.set(true);
+									WordApp.scoreUpdatePending.set(true);
 								}
 								break;
 							}
@@ -89,7 +100,8 @@ public class WordApp {
 
 	    JPanel b = new JPanel();
         b.setLayout(new BoxLayout(b, BoxLayout.LINE_AXIS));
-	   	JButton startB = new JButton("Start");;
+
+				startB = new JButton("Start");
 
 			// add the listener to the jbutton to handle the "pressed" event
 			startB.addActionListener(new ActionListener()
@@ -97,24 +109,44 @@ public class WordApp {
 		      public void actionPerformed(ActionEvent e)
 		      {
 		    	  Thread t = new Thread(w);
+						WordApp.reset.set(false);
 						t.start();
+						startB.setEnabled(false);
+						textEntry.setEnabled(true);
+						endB.setEnabled(true);
 		    	  textEntry.requestFocus();  //return focus to the text entry field
 		      }
 		    });
-		JButton endB = new JButton("End");;
 
+		//END Button
+		endB = new JButton("End");
+		endB.setEnabled(false);
 				// add the listener to the jbutton to handle the "pressed" event
-				pauseB.addActionListener(new ActionListener()
+				endB.addActionListener(new ActionListener()
 			    {
 			      public void actionPerformed(ActionEvent e)
 			      {
-			    	  //[snip]
+							startB.setEnabled(true);
+							textEntry.setEnabled(false);
+			    	  WordApp.reset.set(true);
+							endB.setEnabled(false);
+			      }
+			    });
+
+		JButton quitB = new JButton("Quit"); //Should quit the program (same as x button)
+
+				// add the listener to the jbutton to handle the "pressed" event
+				quitB.addActionListener(new ActionListener()
+			    {
+			      public void actionPerformed(ActionEvent e)
+			      {
+			    	  System.exit(0);
 			      }
 			    });
 
 		b.add(startB);
 		b.add(endB);
-
+		b.add(quitB);
 		g.add(b);
 
       	frame.setLocationRelativeTo(null);  // Center window on screen.
@@ -132,7 +164,7 @@ public static String[] getDictFromFile(String filename) {
 		try {
 			Scanner dictReader = new Scanner(new FileInputStream(filename));
 			int dictLength = dictReader.nextInt();
-			//System.out.println("read '" + dictLength+"'");
+			System.out.println("read '" + dictLength+"'");
 
 			dictStr=new String[dictLength];
 			for (int i=0;i<dictLength;i++) {
@@ -142,6 +174,7 @@ public static String[] getDictFromFile(String filename) {
 			dictReader.close();
 		} catch (IOException e) {
 	        System.err.println("Problem reading file " + filename + " default dictionary will be used");
+					e.printStackTrace();
 	    }
 		return dictStr;
 
@@ -174,6 +207,17 @@ public static String[] getDictFromFile(String filename) {
 		}
 
 
+	}
+
+	public static void finishGame(boolean done)
+	{
+		if(done)
+		{
+			textEntry.setEnabled(false);
+			JOptionPane.showMessageDialog(w, "You don't win or lose");
+			startB.setEnabled(true);
+			endB.setEnabled(false);
+		}
 	}
 
 }

@@ -1,32 +1,30 @@
-# Cloud Assignment Makefile
+# Assignement 4 Makefile
 # Caleb Bredekamp
-# 7 September 2019
+# 27 September 2019
 
 JAVAC=/usr/bin/javac
 
 .SUFFIXES: .java .class
 
 SRCDIR=src
-BINDIR=bin
 
-$(BINDIR)/%.class:$(SRCDIR)/%.java
-	$(JAVAC) -d $(BINDIR)/ -cp $(BINDIR) $<
+.java.class:
+	$(JAVAC) $(SRCDIR)/*.java
 
 CLASSES= \
- Score.class\
- WordDictionary.class\
- WordRecord.class\
- Governor.class\
- Mover.class\
- WordPanel.class\
- WordApp.class
+ Score.java\
+ WordDictionary.java\
+ WordRecord.java\
+ Controller.java\
+ WordPanel.java\
+ WordApp.java
 
-CLASS_FILES=$(CLASSES:%.class=$(BINDIR)/%.class)
+classes: $(CLASSES:%.java=$(SRCDIR)/%.class)
 
-default: $(CLASS_FILES)
+default: classes
 
 clean:
-	rm bin/*.class
+	rm src/*.class
 
 run:
-	java -cp bin WordApp "10" "4" "example_dict.txt"
+	java  -cp src WordApp "10" "4" "src/example_dict.txt"
