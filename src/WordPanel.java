@@ -1,8 +1,6 @@
-/*
+/**
 * The View in MVC
 * Gets communication from the Controlling class to update
-*
-*
 */
 
 import java.awt.Color;
@@ -58,11 +56,11 @@ public class WordPanel extends JPanel implements Runnable {
 			}
 
 			//Takes in communication booleans to update View
-			while(!WordApp.reset.get())
+			while(!WordApp.reset)
 			{
-				if(WordApp.updatePending.get())
+				if(WordApp.updatePending)
 				{
-					if(WordApp.scoreUpdatePending.get())
+					if(WordApp.scoreUpdatePending)
 					{
 						synchronized (WordApp.score)
 						{
@@ -70,19 +68,20 @@ public class WordPanel extends JPanel implements Runnable {
 							WordApp.missed.setText("Missed: " + WordApp.score.getMissed() + "    ");
 							WordApp.caught.setText("Caught: " + WordApp.score.getCaught()+ "    ");
 							WordApp.scr.setText("Score: "+ WordApp.score.getScore()+ "    ");
-							WordApp.scoreUpdatePending.set(false);
+							WordApp.scoreUpdatePending=false;
 
 							//Updates View to end game
 							if(WordApp.score.getTotal() >= WordApp.totalWords)
 							{
-								WordApp.reset.set(true);
-								WordApp.finishGame(true);
+								//WordRecord.easyMode();
+								WordApp.reset=true;
+								WordApp.finishGame();
 							}
 						}
 					}
 					repaint();
 					Toolkit.getDefaultToolkit().sync();
-					WordApp.updatePending.set(false);
+					WordApp.updatePending=false;
 
 				}
 			}
@@ -97,9 +96,11 @@ public class WordPanel extends JPanel implements Runnable {
 			}
 
 			//Resets the words to zero position to mimic the skeleton pre-start screen
+			WordRecord.easyMode();
 			for(int i = 0; i < noWords; i++)
 			{
-				words[i].resetPos();
+
+				words[i].resetWord();
 			}
 			repaint();
 		}

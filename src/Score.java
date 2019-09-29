@@ -1,5 +1,3 @@
-
-
 public class Score {
 	private int missedWords;
 	private int caughtWords;
@@ -11,7 +9,7 @@ public class Score {
 		gameScore=0;
 	}
 
-	// all getters and setters must be synchronized
+	// all getters and setters must be synchronized (maybe)
 
 	public int getMissed() {
 		return missedWords;

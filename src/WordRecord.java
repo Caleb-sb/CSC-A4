@@ -1,8 +1,5 @@
 public class WordRecord {
-	/*
-	* The word object with x and y postion
-	* as well as whether or not it was dropped
-	*/
+
 	private String text;
 	private  int x;
 	private int y;
@@ -10,8 +7,8 @@ public class WordRecord {
 	private boolean dropped;
 
 	private int fallingSpeed;
-	private static int maxWait=1500;
-	private static int minWait=100;
+	private static int maxWait=1200;
+	private static int minWait=900;
 
 	public static WordDictionary dict;
 
@@ -70,6 +67,19 @@ public class WordRecord {
 		return fallingSpeed;
 	}
 
+	private synchronized void moreDifficult(){
+		if(minWait > 100)
+		{
+			minWait = minWait -100;
+			maxWait = maxWait -100;
+		}
+	}
+
+	public static synchronized void easyMode(){
+		maxWait = 1500;
+		minWait = 1100;
+	}
+
 	public synchronized void setPos(int x, int y) {
 		setY(y);
 		setX(x);
@@ -90,7 +100,9 @@ public class WordRecord {
 	public synchronized boolean matchWord(String typedText) {
 		//System.out.println("Matching against: "+text);
 		if (typedText.equals(this.text)) {
+			moreDifficult();
 			resetWord();
+			//System.out.println(this.getSpeed());
 			return true;
 		}
 		else

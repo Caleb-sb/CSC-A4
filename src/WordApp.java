@@ -24,11 +24,11 @@ public class WordApp {
 	static JLabel scr;
 
 	//Communication booleans
-	static volatile AtomicBoolean reset = new AtomicBoolean(false);
+	static volatile boolean reset = false;
 	//static volatile boolean quit;
-	static final int DIFFICULTY = 20;
-	static volatile AtomicBoolean updatePending = new AtomicBoolean(false);
-	static volatile AtomicBoolean scoreUpdatePending = new AtomicBoolean(false);
+	//static final int DIFFICULTY = 20;
+	static volatile boolean updatePending = false;
+	static volatile boolean scoreUpdatePending = false;
 	//static volatile AtomicBoolean checkWord = new AtomicBoolean(false);
 
 	static WordDictionary dict = new WordDictionary(); //use default dictionary, to read from file eventually
@@ -71,7 +71,7 @@ public class WordApp {
 
 	    //[snip]
 
-			//textEntry.setEnabled(false);
+			textEntry.setEnabled(false);
 	   textEntry.addActionListener(new ActionListener()
 	    {
 	      public void actionPerformed(ActionEvent evt) {
@@ -83,7 +83,7 @@ public class WordApp {
 								synchronized (score)
 								{
 									score.caughtWord(text.length());
-									WordApp.scoreUpdatePending.set(true);
+									WordApp.scoreUpdatePending =true;
 								}
 								break;
 							}
@@ -109,7 +109,7 @@ public class WordApp {
 		      public void actionPerformed(ActionEvent e)
 		      {
 		    	  Thread t = new Thread(w);
-						WordApp.reset.set(false);
+						WordApp.reset = false;
 						t.start();
 						startB.setEnabled(false);
 						textEntry.setEnabled(true);
@@ -128,7 +128,7 @@ public class WordApp {
 			      {
 							startB.setEnabled(true);
 							textEntry.setEnabled(false);
-			    	  WordApp.reset.set(true);
+			    	  WordApp.reset = true;
 							endB.setEnabled(false);
 			      }
 			    });
@@ -164,7 +164,7 @@ public static String[] getDictFromFile(String filename) {
 		try {
 			Scanner dictReader = new Scanner(new FileInputStream(filename));
 			int dictLength = dictReader.nextInt();
-			System.out.println("read '" + dictLength+"'");
+			//System.out.println("read '" + dictLength+"'");
 
 			dictStr=new String[dictLength];
 			for (int i=0;i<dictLength;i++) {
@@ -180,6 +180,10 @@ public static String[] getDictFromFile(String filename) {
 
 	}
 
+/**
+* Basically untouched from skeleton
+* Sets up GUI and dictionary
+*/
 	public static void main(String[] args) {
 
 		//deal with command line arguments
@@ -209,15 +213,16 @@ public static String[] getDictFromFile(String filename) {
 
 	}
 
-	public static void finishGame(boolean done)
+	public static void finishGame()
 	{
-		if(done)
-		{
+			float perc = (((float)score.getCaught())/(score.getCaught()+score.getMissed()))*100;
+			String percentage = String.format("%3.1f", perc);
+			//System.out.println(score.getCaught()+" "+perc);
 			textEntry.setEnabled(false);
-			JOptionPane.showMessageDialog(w, "You caught" + "% of the words");
+			JOptionPane.showMessageDialog(w, "You caught " + percentage+ "% of the words");
+
 			startB.setEnabled(true);
 			endB.setEnabled(false);
-		}
 	}
 
 }

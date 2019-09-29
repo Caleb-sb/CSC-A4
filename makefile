@@ -3,23 +3,25 @@
 # 27 September 2019
 
 JAVAC=/usr/bin/javac
+SRCDIR=src
+TOTALWORDS=20
+NOWORDS=4
+DICT="src/example_dict.txt"
 
 .SUFFIXES: .java .class
-
-SRCDIR=src
 
 .java.class:
 	$(JAVAC) $(SRCDIR)/*.java
 
 CLASSES= \
- Score.java\
- WordDictionary.java\
- WordRecord.java\
- Controller.java\
- WordPanel.java\
- WordApp.java
+ Score.class\
+ WordDictionary.class\
+ WordRecord.class\
+ Controller.class\
+ WordPanel.class\
+ WordApp.class
 
-classes: $(CLASSES:%.java=$(SRCDIR)/%.class)
+classes: $(CLASSES:%.class=$(SRCDIR)/%.class)
 
 default: classes
 
@@ -27,7 +29,10 @@ clean:
 	rm src/*.class
 
 run:
-	java  -cp src WordApp "10" "4" "src/example_dict.txt"
+	java  -cp src WordApp $(TOTALWORDS) $(NOWORDS) $(DICT)
+
+run_code_dict:
+	java -cp src WordApp $(TOTALWORDS) $(NOWORDS)
 
 docs:
 	mkdir docs && javadoc --source-path src/*.java -d docs
