@@ -16,7 +16,7 @@ public class WordApp {
 	static int noWords=4;
 	static int totalWords;
 
-   	static int frameX=1000;
+  static int frameX=1000;
 	static int frameY=600;
 	static int yLimit=480;
 	static JLabel caught;
@@ -25,11 +25,11 @@ public class WordApp {
 
 	//Communication booleans
 	static volatile AtomicBoolean reset = new AtomicBoolean(false);
-	static volatile boolean quit;
+	//static volatile boolean quit;
 	static final int DIFFICULTY = 20;
 	static volatile AtomicBoolean updatePending = new AtomicBoolean(false);
 	static volatile AtomicBoolean scoreUpdatePending = new AtomicBoolean(false);
-	static volatile AtomicBoolean checkWord = new AtomicBoolean(false);
+	//static volatile AtomicBoolean checkWord = new AtomicBoolean(false);
 
 	static WordDictionary dict = new WordDictionary(); //use default dictionary, to read from file eventually
 
@@ -71,7 +71,7 @@ public class WordApp {
 
 	    //[snip]
 
-			textEntry.setEnabled(false);
+			//textEntry.setEnabled(false);
 	   textEntry.addActionListener(new ActionListener()
 	    {
 	      public void actionPerformed(ActionEvent evt) {
@@ -214,7 +214,7 @@ public static String[] getDictFromFile(String filename) {
 		if(done)
 		{
 			textEntry.setEnabled(false);
-			JOptionPane.showMessageDialog(w, "You don't win or lose");
+			JOptionPane.showMessageDialog(w, "You caught" + "% of the words");
 			startB.setEnabled(true);
 			endB.setEnabled(false);
 		}

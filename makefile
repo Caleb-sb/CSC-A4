@@ -28,3 +28,6 @@ clean:
 
 run:
 	java  -cp src WordApp "10" "4" "src/example_dict.txt"
+
+docs:
+	mkdir docs && javadoc --source-path src/*.java -d docs

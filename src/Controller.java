@@ -8,7 +8,7 @@
 public class Controller implements Runnable{
 
   private WordRecord word;
-  private Score score;
+  //private Score score;
 
   Controller(WordRecord word)
   {
