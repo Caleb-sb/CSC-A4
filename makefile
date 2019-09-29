@@ -31,8 +31,5 @@ clean:
 run:
 	java  -cp src WordApp $(TOTALWORDS) $(NOWORDS) $(DICT)
 
-run_code_dict:
-	java -cp src WordApp $(TOTALWORDS) $(NOWORDS)
-
 docs:
 	mkdir docs && javadoc --source-path src/*.java -d docs
